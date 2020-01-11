@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@model NetC.JuniorDeveloperExam.Web.Models.BlogPost
+@{
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,7 +11,7 @@
     <title>Top 5 Considerations for a Content-First Design Approach - NetConstruct Blog</title>
     <link rel="stylesheet" type="text/css" href="/Assets/Styles/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/Assets/Styles/custom.css" />
-    </head>
+</head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -32,8 +37,20 @@
         <div class="row">
 
             <!-- Blog post content -->
-            <div class="col-lg-12">
+            <div class="container">
+                <div class="col-lg-12">
+                    <ul>
+                        @foreach (var BlogPosts in Model.BlogPosts)
+                        {
+                            <li>@BlogPosts.Date</li>
+                            <li>@BlogPosts.Title</li>
+                            <li>@BlogPosts.Image</li>
+                            <li>@BlogPosts.HtmlContent</li>
+                            <li>@BlogPosts.Comments</li>
 
+                        }
+                    </ul>
+                </div>
                 <!-- Title -->
                 <h1 class="mt-4">Top 5 Considerations for a Content-First Design Approach</h1>
 
@@ -88,11 +105,37 @@
                                 <label for="Message">Message</label>
                                 <textarea id="Message" class="form-control" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            
+                            <input type="button" id="btnSend" value="Submit"/>
                         </form>
                     </div>
                 </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $('#btnSend').click(function ()
+                        {
 
+                            var blogPosts = { Comment: "Sed vel odio consequat, elementum massa quis, lobortis est. Nulla egestas congue dolor, sit amet fermentum massa dignissim sit amet. In vestibulum iaculis egestas." }
+                            $.ajax({
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                data: "{blogPosts:" + JSON.stringify(blogPosts) + "}",
+                                url: "Blog/GetData",
+                                success: function (data)
+                                {
+                                    alert("comment:" + data);
+                                },
+                                error: function (result) {
+                                    alert("Something Went Wrong!");
+                                }
+
+                            })
+                        })
+                    })
+
+
+
+                </script>
                 <!-- Blog post comments -->
                 <div class="media mb-4">
                     <img class="d-flex mr-3 rounded-circle user-avatar" src="https://eu.ui-avatars.com/api/?name=Steven+Barker" alt="Steven Barker">
@@ -121,7 +164,7 @@
             </div>
         </div>
     </div>
-
+    
     <script src="~/Assets/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Assets/Scripts/jquery.validate.min.js"></script>
     <script src="~/Assets/Scripts/jquery.validate.unobtrusive.min.js"></script>
@@ -129,3 +172,4 @@
     <script src="~/Assets/Scripts/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
