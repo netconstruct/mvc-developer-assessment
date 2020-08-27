@@ -1,0 +1,154 @@
+﻿@model NetC.JuniorDeveloperExam.Web.Models.BlogPostModel
+@{
+    ViewBag.Title = "BlogPost";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 5 Considerations for a Content-First Design Approach - NetConstruct Blog</title>
+    <link rel="stylesheet" type="text/css" href="/Assets/Styles/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Assets/Styles/custom.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">NetConstruct Blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">
+                            Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <h1 class="mt-4">@Html.DisplayFor(model => model.Title) </h1>
+
+                <hr>
+
+                <p>Posted on @Html.DisplayFor(model => model.Date)</p>
+
+                <hr>
+
+                <img class="img-fluid rounded" src=@Html.DisplayFor(model => model.Image) alt="Top 5 Considerations for a Content-First Design Approach">
+
+                <hr>
+
+                @{
+                    HtmlString msg = new HtmlString(Model.HtmlContent);
+                    @msg;
+                }
+
+                <hr>
+
+                @using (Html.BeginForm("AddComment", "Blog", FormMethod.Post))
+                {
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.NewComment.Id)
+                    <div class="card my-4">
+                        <h5 class="card-header">Leave a Comment:</h5>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.NewComment.Name)
+                                        @Html.EditorFor(model => model.NewComment.Name, new { htmlAttributes = new { @class = "form-control", id = "Name", placeholder = "Name" } })
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.NewComment.EmailAddress)
+                                        @Html.EditorFor(model => model.NewComment.EmailAddress, new { htmlAttributes = new { @class = "form-control", id = "EmailAddress", placeholder = "Email Address", type = "email" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.NewComment.Message)
+                                    @Html.TextAreaFor(model => model.NewComment.Message, new { @class = "form-control", id = "Message", rows = "3" })
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                <!-- Blog post comments -->
+                @for (int i = 0; i < Model.CommentsModel.Count; i++)
+                {
+                    <div class="media mb-4">
+                        <img class="d-flex mr-3 rounded-circle user-avatar" src=@Html.DisplayFor(model => model.CommentsModel[i].Avatar) alt=@Html.DisplayFor(model => model.CommentsModel[i].Name)>
+                        <div class="media-body">
+                            <h5 class="mt-0">@Html.DisplayFor(model => model.CommentsModel[i].Name) <small><em>@Html.DisplayFor(model => model.CommentsModel[i].Date, "{dddd, dd MMMM yyyy HH:mm: ss}")</em></small></h5>
+                            @Html.DisplayFor(model => model.CommentsModel[i].Message)
+
+                            <hr />
+
+                            <button onclick="displayReplyForm(@i)" class="btn btn-primary"> Reply</button>
+                            <div id="@("ReplyForm"+i)" style="display: none">
+                                @using (Html.BeginForm("AddReply", "Blog", FormMethod.Post))
+                                {
+                                    @Html.HiddenFor(model => model.Id)
+
+                                    { Model.SelectedCommentId = i + 1; }
+                                    { Model.NewComment.Reply = true; }
+                                    @Html.HiddenFor(model => model.SelectedCommentId)
+
+                                    <form>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-auto">
+                                                @Html.LabelFor(model => model.NewComment.Name)
+                                                @Html.EditorFor(model => model.NewComment.Name, new { htmlAttributes = new { @class = "form-control", id = "Name", placeholder = "Name" } })
+                                            </div>
+                                            <div class="form-group col-md-auto">
+                                                @Html.LabelFor(model => model.NewComment.EmailAddress)
+                                                @Html.EditorFor(model => model.NewComment.EmailAddress, new { htmlAttributes = new { @class = "form-control", id = "EmailAddress", placeholder = "Email Address", type = "email" } })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.NewComment.Message)
+                                            @Html.TextAreaFor(model => model.NewComment.Message, new { @class = "form-control", id = "Message", rows = "3" })
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                }
+
+                                <hr>
+                            </div>
+                            @for (int j = 0; j < Model.CommentsModel[i].Replies.Count; j++)
+                            {                                    
+                                <div class="media mb-4">
+                                    <img class="d-flex mr-3 rounded-circle user-avatar" src=@Html.DisplayFor(model => model.CommentsModel[i].Replies[j].Avatar) alt=@Html.DisplayFor(model => model.CommentsModel[i].Replies[j].Name)>
+                                    <div class="media-body">
+                                        <h5 class="mt-0">@Html.DisplayFor(model => model.CommentsModel[i].Replies[j].Name) <small><em>@Html.DisplayFor(model => model.CommentsModel[i].Replies[j].Date, "{dddd, dd MMMM yyyy HH:mm: ss}")</em></small></h5>
+                                        @Html.DisplayFor(model => model.CommentsModel[i].Replies[j].Message)
+                                    </div>
+                                </div>
+                            }                            
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <script src="/Assets/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="/Assets/Scripts/jquery.validate.min.js"></script>
+    <script src="/Assets/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Assets/Scripts/unobtrusive-bootstrap.js"></script>
+    <script src="/Assets/Scripts/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Assets/Scripts/CommentReply.js"></script>
+</body>
+</html>
+
