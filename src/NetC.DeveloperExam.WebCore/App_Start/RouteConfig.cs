@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace NetC.JuniorDeveloperExam.Web
+namespace NetC.DeveloperExam.WebCore
 {
     public class RouteConfig
     {
