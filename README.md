@@ -25,10 +25,10 @@ The ```Blog-Posts.json``` file contains mock blog post data in JSON format, this
 ## Prerequisites
 In order to run the provided solution the following software will need to be installed:
 
-* Microsoft Visual Studio 2019 [here.](https://visualstudio.microsoft.com/vs/)
-* .NET Framework 4.8 SDK [here.](https://dotnet.microsoft.com/download/visual-studio-sdks)
+* Microsoft Visual Studio 2022 [here.](https://visualstudio.microsoft.com/vs/)
+* .NET 8.0 [here.](https://dotnet.microsoft.com/download/visual-studio-sdks)
 
-Once the prerequisites are installed the ```'/src/NetC.JuniorDeveloperExam.sln'``` file should be opened using Visual Studio and run via IIS Express.
+Once the prerequisites are installed the ```'/src/NetC.DeveloperExam.sln'``` file should be opened using Visual Studio and run via IIS Express.
 
 ## Exercise 1
 Create an MVC view containing the blog post content, use the HTML found within the ```template.html``` file as the page layout.

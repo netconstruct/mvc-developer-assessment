@@ -19,4 +19,12 @@ app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
 
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapGet("{resource}.axd/{*pathInfo}", (string resource, string pathInfo, HttpContext context) => {
+        context.Response.StatusCode = 404;
+        return Task.CompletedTask;
+    });
+}); // todo check this does what the origional file did
+
 app.Run();
